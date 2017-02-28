@@ -1,4 +1,3 @@
-import { UserData } from './../../../AlbertoSabalo/angular2/7-http/cash-flow/src/app/shared/model/data.class';
 import { Subscription } from 'rxjs/Rx';
 
 import { Component, OnInit } from '@angular/core';
@@ -27,7 +26,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit(){
       /* En general-> el observer que se suscribe normalmente lo creamos anónimo, en este caso solo pintará por pantalla, pero 
-     se podría crear programáticamente y pasarselo 
+     se podría crear programáticamente y pasárselo 
     
     let observador = Rx.Observer.create(
       function onNext(x) { console.log('Next: ' + x); }, 
@@ -183,6 +182,16 @@ export class AppComponent implements OnInit{
     .subscribe(console.log); 
   } 
 
+
+ ejemplo6 () {
+
+
+
+ }  
+
+
+
+/********** funciones observables ****/
 
   //función que multiplica * 2 los elementos de un array
   funcion1$ (array : Array<any>) : Observable<any>{
