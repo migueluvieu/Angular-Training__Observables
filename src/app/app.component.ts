@@ -1,5 +1,3 @@
-import { UserData } from './../../../AlbertoSabalo/angular2/7-http/cash-flow/src/app/shared/model/data.class';
-import { Subscription } from 'rxjs/Rx';
 
 import { Component, OnInit } from '@angular/core';
 //importamos observable de rxjs-> el módulo añadido en system.js y los operadores que vayamos a utilizar
