@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-import { Subscription } from 'rxjs/Rx';
-=======
->>>>>>> 7465270a20b645c5fec8174602dd2346b68f826c
-
 import { Component, OnInit } from '@angular/core';
 //importamos observable de rxjs-> el módulo añadido en system.js y los operadores que vayamos a utilizar
 import { Observable } from 'rxjs/Observable';
