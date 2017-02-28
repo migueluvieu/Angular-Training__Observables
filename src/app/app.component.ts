@@ -186,7 +186,8 @@ export class AppComponent implements OnInit{
   } 
 
 
- ejemplo661 () {
+ ejemplo65 () {
+//conflict
 
 
 
