@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-import { Subscription } from 'rxjs/Rx';
-=======
->>>>>>> 7465270a20b645c5fec8174602dd2346b68f826c
 
 import { Component, OnInit } from '@angular/core';
+import { Http, Response }          from '@angular/http';
 //importamos observable de rxjs-> el módulo añadido en system.js y los operadores que vayamos a utilizar
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
@@ -11,10 +8,12 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/max';
 import 'rxjs/add/observable/timer';
+
 
 
 
@@ -26,6 +25,10 @@ import 'rxjs/add/observable/timer';
 })
 export class AppComponent implements OnInit{
   title = 'Observables';
+
+  constructor (private http:Http){
+
+  }
 
   ngOnInit(){
       /* En general-> el observer que se suscribe normalmente lo creamos anónimo, en este caso solo pintará por pantalla, pero 
@@ -46,6 +49,10 @@ export class AppComponent implements OnInit{
      this.ejemplo3();
      this.ejemplo4();
      this.ejemplo5();
+     this.ejemplo6();
+     this.ejemplo7();
+     this.ejemplo8();
+     this.ejemplo9();
 
   }
 
@@ -186,14 +193,57 @@ export class AppComponent implements OnInit{
   } 
 
 
- ejemplo65 () {
-//conflict
-
-
+ ejemplo6 () {
+  console.log("***** Ejemplo6 ******");
+  console.log("***** invocación rest a fake de post, devuelve observable******"); 
+ 
+  //devuelve todos
+  this.getPost$().subscribe(console.log);
+  //devuelve detalle de uno
+  this.getPostDetail$(1).subscribe(console.log);
 
  }  
 
+ejemplo7 () {
+  console.log("***** Ejemplo7******");
+  console.log("***** invocación rest chained, obtiene todos y obtiene detalle del último ******");  
+  //chained
+  this.getPost$().flatMap( 
+     postsResp => 
+       this.getPostDetail$(postsResp[postsResp.length-1].id))
+    .subscribe(console.log);
+ }  
 
+ ejemplo8 () {
+  console.log("***** Ejemplo8 ******");
+  console.log("***** invocación rest chained, obtiene todos, luego primero y luego último ******");  
+  let postReceived = [];
+  //chained. se asigna post a vble postReceived y se obtiene el primero y encadenado el último 
+  this.getPost$().map( postResp => postReceived = postResp)
+  .flatMap( ()=>this.getPostDetail$(postReceived[0].id))
+  .flatMap( ()=>this.getPostDetail$(postReceived[postReceived.length-1].id))
+  .subscribe(console.log);
+ }  
+
+ ejemplo9 () {
+  console.log("***** Ejemplo9 ******");
+  console.log("***** invocación rest, obtiene todos y luego de cada uno, su detalle, al final se obtiene un array de todos con detalle ******");  
+  let postReceived = [];
+  //Se obtienen todos y con map vamos recorriendo. por cada item se obtien detalle. Ojo, aquí en realidad no encadeno, no hay flatMap
+  //ya que por cada invocación al detalle lo que hago es añadirDetalle a la vble postReceived
+  
+   this.getPost$().map(
+    posts=> 
+       posts.map(
+         item=>this.getPostDetail$(item.id).subscribe(postReceived.push)
+         ) 
+    )
+  .subscribe(res=>console.log(postReceived));
+
+ }  
+
+  
+ 
 
 /********** funciones observables ****/
 
@@ -221,5 +271,42 @@ export class AppComponent implements OnInit{
   getMaximo$ (array :Array<any>, property?): Observable<any> {
     console.log ("Calculamos el máx de un array con rxjs")
     return Observable.from (array).max(property);
+  }
+
+  getPost$ (): Observable<any> {
+    return this.http.get("http://jsonplaceholder.typicode.com/posts")
+                    .map(this.extractData)
+                    .catch(this.handleError);
+  }
+
+  getPostDetail$ (id): Observable<any> {
+    return this.http.get("http://jsonplaceholder.typicode.com/posts/".concat(id))
+                    .map(this.extractData)
+                    .catch(this.handleError);
+  }
+
+  getPostComments$ (id): Observable<any> {
+    return this.http.get("http://jsonplaceholder.typicode.com/posts/".concat(id))
+                    .map(this.extractData)
+                    .catch(this.handleError);
+  }
+
+  
+  private extractData(res: Response) {
+    let body = res.json();
+    return body || { };
+  }
+
+   private handleError (error: Response | any) {
+    let errMsg: string;
+    if (error instanceof Response) {
+      const body = error.json() || '';
+      const err = body.error || JSON.stringify(body);
+      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+    } else {
+      errMsg = error.message ? error.message : error.toString();
+    }
+    console.error(errMsg);
+    return Observable.throw(errMsg);
   }
 }
