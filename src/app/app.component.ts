@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { Http, Response }          from '@angular/http';
 //importamos observable de rxjs-> el módulo añadido en system.js y los operadores que vayamos a utilizar
