@@ -1,31 +1,40 @@
 # Observables
+Proyecto para las pruebas con la librería rxjs. Una primera aproximación, se irá completando con operadores de ReactiveX.js 
 
-This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.28.3.
+## Debug
+Levantar servidor y activar consola chrome para ver resultados
 
-## Development server
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Recursos aclaratorios:
+https://codekstudio.com/post-blog/conceptos-observables-rxjs-y-angular-2-javascript-reactivo-y-funcional/57d1e2840897131b5ec54b90
+https://namitamalik.github.io/Map-vs-FlatMap/
+rx en java, interesante 
+http://sglora.com/android-tutorial-sobre-rxjava-i-lo-basico/
 
-## Code scaffolding
+## Ventajas con Promises
+Los observables se pueden cancelar, a diferencia de las promises
+Las promises solo pueden devolver una respuesta (a menos que combines varias promises con $q.all)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class/module`.
+## Características
+Un recurso Observable puede ser observador por n observers. Los observes se suscriben a sus cambios:
+Observable.subscribe(observer1);
+Observable.subscribe(observer2);
+Observable.subscribe(observer3);
 
-## Build
+El recurso Observable no se ejecuta si no tiene ningún observer suscrito.
+Se pueden observar todo tipo de recursos. El más común el htt.get, mítico de las apis. Devuelve un recurso Observable.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Los recursos Observables emiten el contenido al observer suscrito mediante método onNext.
+Ejemplo de un observer:
 
-## Running unit tests
+var observador = Rx.Observer.create(
+    function onNext(x) { console.log('Next: ' + x); }, 
+    function onError(err) { console.log('Error: ' + err); }, 
+    function onCompleted() { console.log('Completed'); } 
+); 
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+observable.suscribe(observador);
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Deploying to GitHub Pages
-
-Run `ng github-pages:deploy` to deploy to GitHub Pages.
-
-## Further help
+## Operadores
+http://reactivex.io/documentation/operators
 
 To get more help on the `angular-cli` use `ng help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
