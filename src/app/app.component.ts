@@ -12,6 +12,7 @@ import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/max';
 import 'rxjs/add/observable/timer';
+import 'rxjs/add/observable/forkJoin';
 
 
 
@@ -52,6 +53,7 @@ export class AppComponent implements OnInit{
      this.ejemplo7();
      this.ejemplo8();
      this.ejemplo9();
+     this.ejemplo10();
 
   }
 
@@ -181,6 +183,14 @@ export class AppComponent implements OnInit{
     console.log("***** funciones observables encadenadas, mergeMap******");
     let array = [1,2,3,4];  
     //las observables se encadenan con flatMap (antes se llamaba mergeMap). 
+    // con esta función se aplana el stream, es decir, como la función devuelve un observable 
+    // si utilizamos map así:  this.funcion1$(array).map(res=>this.funcion2$(res)) esto devolvería un Observable<Observable<any>>
+    // en cambio si añadimos el flatMap, el resultado sería Observable<any>. Siempre que el la función consumer de un map devuelva un observable
+    // utilizar el flatMap para "aplanar" los datos
+    //El resultado de se pasa a la siguiente y así
+    // son funciones chorras que no serían observables pero se ve.
+    //aquí multiplicamos por 2 los items del array, luego seleccionamos los >2 en otra observable
+    //y finalmente volvemos a multiplicar*2 y calculamos el máximo del array  
     //El resultado de se pasa a la siguiente y así
     // son funciones chorras que no serían observables pero se ve.
     //aquí multiplicamos por 2 los items del array, luego seleccionamos los >2 en otra observable
@@ -240,6 +250,20 @@ ejemplo7 () {
   .subscribe(res=>console.log(postReceived));
 
  }  
+
+ ejemplo10(){
+  console.log("***** Ejemplo10 ******");
+  console.log("***** invocación observables en paralelo con forkJoin ******");
+  //forkJoin viene a ser un PromiseAll pero con observables. Al final el resultado es una array donde cada posición es el resultado de cada llamada  
+
+  Observable.forkJoin(
+     this.http.get('https://jsonplaceholder.typicode.com/users').map(this.extractData),
+     this.http.get('https://jsonplaceholder.typicode.com/albums').map(this.extractData) 
+     ).subscribe(res=> {
+       console.log('******Estos son los users : ',res[0] );
+        console.log('******Estos son los albumes: ',res[1] );
+      });
+ }
 
   
  
